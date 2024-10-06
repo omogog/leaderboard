@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - '3000:3000'
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      - DB_TYPE=mysql
+      - MYSQL_HOST=mysql
+      - MYSQL_USER=root
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_PASSWORD=examplePassword
+      - MYSQL_DATABASE=steps_leaderboard
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: steps_leaderboard
+      MYSQL_USER: steps_leaderboard_user
+      MYSQL_PASSWORD: examplePassword
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./dockerResources:/docker-entrypoint-initdb.d
+
+  redis:
+    image: redis:alpine
+    ports:
+      - '6379:6379'
